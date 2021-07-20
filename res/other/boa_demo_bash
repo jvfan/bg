@@ -1,0 +1,38 @@
+#!/bin/bash
+
+RETVAL=0
+BOAPID=$(pidof boa)
+
+# 注释：启动函数的入口函数
+start(){
+if [ "$BOAPID" = "" ]
+then
+  /boa/boa
+  echo " * boa service is starting..."
+else
+  echo " * boa is running!So nothing to do!"
+fi
+}
+
+# 注释：停止函数的入口函数
+stop(){
+if [ "$BOAPID" = "" ]
+then
+  echo " * boa is not running!So nothing to do!"
+else
+  kill -9 $BOAPID
+  echo " * boa service is stopping..."
+fi
+}
+
+# 注释：根据输入的第一个参数执行相应函数
+case $1 in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+esac
+
+exit $RETVAL

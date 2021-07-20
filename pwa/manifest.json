@@ -1,0 +1,19 @@
+{
+  "name": "嵌入式修行",
+  "short_name": "Learn-Embedding",
+  "description": "A personal blog by engineer",
+  "icons": [{
+    "src": "icons/128.png",
+    "sizes": "128x128",
+    "type": "image/png"
+  }, {
+    "src": "icons/512.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }],
+  "background_color": "#fff",
+  "theme_color": "#ccc",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}

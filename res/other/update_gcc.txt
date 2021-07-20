@@ -1,0 +1,15 @@
+1.apt-get install gcc-4.4 g++-4.4 g++-4.4-multilib gcc-4.4-multilib
+
+2.update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.4 100
+
+3.update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.6 50
+
+4.update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.4 100
+
+5.update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.6 50
+
+6.update-alternatives --install /usr/bin/cpp cpp-bin /usr/bin/cpp-4.4 100
+
+7.update-alternatives --install /usr/bin/cpp cpp-bin /usr/bin/cpp-4.6 50
+
+8.gcc -v

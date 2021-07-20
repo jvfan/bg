@@ -1,0 +1,337 @@
+---
+
+layout:     post
+title:      新装 WSL2 以及安装 docker 和 code_server
+subtitle:   关于如何新装和使用 WSL2
+date:       2020-05-17
+author:     Jerry Chen
+header-img: img/post-bg-debug.png
+catalog: true
+tags:
+    - docker
+    - WSL2
+    - code-server
+---
+
+> 需要 windows10 升级到 2004
+
+### 准备工具
+
+- WSL2-Ubuntu20.04：windows 下的 linux 子系统
+- [GitHub：code-server](https://github.com/cdr/code-server)
+
+### WSL2 部分
+
+#### 安装 WSL2
+
+1. 首先启用 Windows 功能
+
+   ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/image-20200517152329817.png)
+   
+   另外通过 `PowerShell` 命令行也可以开启：
+   
+   ```
+   dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+   dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+   ```
+   
+2. 更新 WSL 2 Linux 内核
+
+   点此下载内核更新包 [X86](https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi) 
+
+   ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/image-20200517155913532.png)
+
+3. 将 WSL2 设置为默认版本
+
+   通过 `PowerShell` 命令行进行配置：
+
+   ```
+   wsl --set-default-version 2
+   ```
+
+   ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/image-20200517160902059.png)
+
+4. 接着就可以去应用商店安装 Linux 分发版了
+
+#### 安装 Linux 分发版
+
+1. 打开应用商店搜索 “Ubuntu 20”并安装
+
+   ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/image-20200517163132629.png)
+
+2. 安装完成后启动一次
+
+   ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/image-20200517163317374.png)
+
+3. 查看已经安装的 WSL 版本
+
+   `PowerShell` 中输入：
+
+   ```
+   wsl -l -v
+   ```
+
+   ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/image-20200517163507513.png)
+
+4. 如果曾经安装过 WSL 一代，可使用如下命令更改版本（也可2降1）
+
+   `PowerShell` 中输入：
+
+   ```
+   wsl --set-version Ubuntu-20.04 2
+   ```
+
+#### 配置 Ubuntu20.04（阿里云仓库）
+
+1. 换阿里源
+
+   ```
+   sudo vim /etc/apt/sources.list
+   ```
+
+   用下面的内容替换原内容：
+
+   ```
+   deb http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
+   deb-src http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
+   
+   deb http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
+   deb-src http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
+   
+   deb http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
+   deb-src http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
+   
+   deb http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
+   deb-src http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
+   
+   deb http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
+   deb-src http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
+   ```
+
+2. 更新缓存和升级
+
+   ```
+   sudo apt-get update
+   sudo apt-get upgrade
+   ```
+
+#### 迁移 WSL 到非系统盘
+
+下载一个编译好的 [LxRunOffline](https://github.com/DDoSolitary/LxRunOffline/releases)（我下载的是 LxRunOffline-v3.5.0-msvc.zip），解压缩后使用该工具进行管理；
+
+![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/20200923095300.png)
+
+* 查看已经安装的 WSL：
+
+  ```
+  .\LxRunOffline.exe list
+  ```
+
+  ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/20200923095614.png)
+
+* 迁移 Ubuntu-20.04
+
+  先使用命令关闭 wsl： `wsl --shutdown`
+
+  ```
+  .\LxRunOffline.exe move -n Ubuntu-20.04 -d E:\WSL\Ubuntu-20.04
+  ```
+
+* 查看 Ubuntu-20.04 所在目录
+
+  ```
+  .\LxRunOffline.exe get-dir -n Ubuntu-20.04
+  ```
+
+  ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/20200923100332.png)
+
+#### 解决 wsl2 出现 Vmmem 内存占用过大
+
+1. 进入 WSL2，设置定时任务：每 15 分钟删除缓存，并创建一个文件
+
+   `sudo crontab -e -u root` 添加如下的行：
+
+   ```
+   */15 * * * * sync; echo 3 > /proc/sys/vm/drop_caches; touch /root/drop_caches_last_run
+   ```
+
+2. 开机自启动 cron 服务
+
+   `vim ~/.bashrc` 添加如下的行：
+
+   ```
+   [ -z "$(ps -ef | grep cron | grep -v grep)" ] && sudo /etc/init.d/cron start &> /dev/null
+   ```
+
+3. 允许启动 cron 服务而无需输入 root 密码
+
+   `sudo visudo` 添加以下行：
+
+   ```
+   %sudo ALL=NOPASSWD: /etc/init.d/cron start
+   ```
+
+4. 重启 WSL2
+
+   powershell 上杀死 WSL `wsl --shutdown`，然后再次启动它；
+   
+5. 跟踪定时任务，判断它是否正常工作
+
+   因为在定时任务中创建了 /root/drop_caches_last_run 文件，可以通过查看该文件的修改日期跟踪目标任务的工作情况：
+
+   ```
+   sudo stat -c '%y' /root/drop_caches_last_run
+   ```
+
+#### [可选] 限制 WSL2 内存使用
+
+先使用命令关闭 wsl： `wsl --shutdown`
+
+接着在用户文件夹下新建一个 .wslconfig 文件  `C:\Users\<yourUserName>\.wslconfig`，内容如下：
+
+```
+[wsl2]
+memory=3GB
+swap=3GB
+localhostForwarding=true
+```
+
+### docker 部分
+
+#### 安装 docker-ce（阿里云仓库）
+
+> 注意：docker.io 是旧版本，这里是安装社区版本的 docker-ce
+
+1. 安装 docker
+
+   ```
+   # step 1: 安装必要的一些系统工具
+   sudo apt-get update
+   sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common
+   # step 2: 安装GPG证书
+   curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
+   # Step 3: 写入软件源信息
+   sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
+   # Step 4: 更新并安装Docker-CE
+   sudo apt-get -y update
+   sudo apt-get -y install docker-ce
+   ```
+
+2. 解决遇到的问题“no installation candidate”
+
+   原因是 Ubuntu20.04 的软件库中没有 docker-ce；
+
+   改用 Ubuntu19.04(Disco) 的软件库即可，方法如下：
+
+   * 去掉 `/etc/apt/sources.list` 中新增的docker源
+
+   * 输入以下命令新增 disco 的 docker 源
+
+     > 安装完成后，可以把该源删除
+
+     ```
+     sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu disco stable"
+     ```
+
+   * 再次安装
+
+     > 如果出现 `configuring grub-pc` 就直接回车，不进行选择（三个框留空）；
+
+     ```
+     sudo apt-get -y update
+     sudo apt-get -y install docker-ce
+     ```
+
+
+#### docker 配置（包括添加用户到 docker 组）
+
+1. 启动服务（每次开机都要执行一次）
+
+   > WSL2 上没有 systemctl
+
+   ```
+   sudo service docker start
+   ```
+
+2. 初步进行测试
+
+   ```
+   sudo docker run hello-world
+   ```
+
+   ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/image-20200517202211982.png)
+
+3. [可选] 配置国内 docker 源（163源）
+
+   ```
+   sudo vim /etc/docker/daemon.json
+   sudo service docker restart
+   ```
+
+   添加如下内容：
+
+   > 注意 tab 必须写正确。
+
+   ```
+   {
+           "registry-mirrors": ["https://registry.docker-cn.com","http://hub-mirror.c.163.com"]
+   }
+   ```
+
+4. [可选] 添加当前用户到 docker 用户组，这样可以不加 sudo 运行 docker
+
+   ```
+   sudo adduser $USER docker
+   
+   # 刷新 docker 组
+   newgrp docker
+   ```
+
+   测试运行结果：
+
+   > 如果不行就重启服务，关闭窗口再重新打开
+
+   ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/image-20200517202718881.png)
+
+### code-server 部分
+
+#### 1、docker 方式
+
+1. docker 安装 code-server
+
+   ```
+   sudo mkdir -p /home/coder/project
+   sudo chown -R jerry /home/coder
+   
+   docker run --name code-server -d --env PASSWORD="ojbk" -p 127.0.0.1:8080:8080 -v "/home/coder/project:/home/coder/project" -u "$(id -u):$(id -g)" codercom/code-server:latest
+   ```
+
+2. 浏览器访问 `localhost:8080` 
+
+   > 端口是设置的 8080；
+   >
+   > 密码是环境变量设的 “ojbk”；
+
+   ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/image-20200517214316300.png)
+
+3. 设置容器自启动
+
+   > 依赖于 docker 服务已启动
+
+   ```
+   docker update --restart=always code-server
+   ```
+
+#### 2、发布版方式
+
+1. 下载
+
+   [code-server 发布版下载](https://github.com/cdr/code-server/releases)
+
+2. 解压后运行
+
+   ```
+   export PASSWORD="123456"
+   ./code-server --bind-addr localhost:8080
+   ```
+
