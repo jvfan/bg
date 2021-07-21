@@ -285,6 +285,10 @@ header-img: "img/home-bg.jpg"
 
 11. static、const 的用法；（*）
 
+   static 主要功能是隐藏，其次因为 static 变量存放在静态存储区，所以它具备持久性和默认值 0；
+   
+   const 
+
 12. 智能指针（*）
 
 ### 数据结构
