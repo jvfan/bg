@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      解决 github pages 图片显示问题
+title:      解决 github 访问以及 github pages 图片显示问题
 subtitle:   修改 dns 或通过 hosts 进行重定向
 date:       2020-01-03
 author:     Jerry Chen
