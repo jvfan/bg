@@ -30,7 +30,7 @@ tags:
 
    另外通过 `PowerShell` 命令行也可以开启：
 
-   ```
+   ```powershell
    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
    ```
@@ -45,7 +45,7 @@ tags:
 
    通过管理员权限 `PowerShell` 命令行进行配置：
 
-   ```
+   ```powershell
    wsl --set-default-version 2
    ```
 
@@ -67,7 +67,7 @@ tags:
 
    管理员权限 `PowerShell` 中输入：
 
-   ```
+   ```powershell
    wsl -l -v
    ```
 
@@ -77,7 +77,7 @@ tags:
 
    管理员权限 `PowerShell` 中输入：
 
-   ```
+   ```powershell
    wsl --set-version Ubuntu-20.04 2
    ```
 
@@ -85,7 +85,7 @@ tags:
 
 1. 换阿里源
 
-   ```
+   ```shell
    sudo vim /etc/apt/sources.list
    ```
 
@@ -110,7 +110,7 @@ tags:
 
 2. 更新缓存和升级
 
-   ```
+   ```shell
    sudo apt-get update
    sudo apt-get upgrade
    ```
@@ -123,13 +123,15 @@ tags:
 
 1. 下载 gpu 驱动
 
-   - [WSL 的 Nvidia GPU 驱动程序](https://developer.nvidia.com/cuda/wsl)
+   > 因特尔或 AMD 的 GPU 驱动必装，Nvidia 可选；
+
    - [WSL 的英特尔 GPU 驱动程序](https://downloadcenter.intel.com/download/30579/Intel-Graphics-Windows-DCH-Drivers)
    - [WSL 的 AMD GPU 驱动程序](https://community.amd.com/community/radeon-pro-graphics/blog/2020/06/17/announcing-amd-support-for-gpu-accelerated-machine-learning-training-on-windows-10)
+   - [WSL 的 Nvidia GPU 驱动程序](https://developer.nvidia.com/cuda/wsl)
 
 2. 管理员权限 powershell 命令更新到 wslg
 
-   ```shell
+   ```powershell
    wsl --update
    ```
 
@@ -152,7 +154,7 @@ tags:
 
    `sudo crontab -e -u root` 添加如下的行：
 
-   ```
+   ```shell
    */15 * * * * sync; echo 3 > /proc/sys/vm/drop_caches; touch /root/drop_caches_last_run
    ```
 
@@ -160,7 +162,7 @@ tags:
 
    `vim ~/.bashrc` 添加如下的行：
 
-   ```
+   ```shell
    [ -z "$(ps -ef | grep cron | grep -v grep)" ] && sudo /etc/init.d/cron start &> /dev/null
    ```
 
@@ -180,19 +182,22 @@ tags:
 
    因为在定时任务中创建了 /root/drop_caches_last_run 文件，可以通过查看该文件的修改日期跟踪目标任务的工作情况：
 
-   ```
+   ```shell
    sudo stat -c '%y' /root/drop_caches_last_run
    ```
 
 #### [可选] 限制 WSL2 内存使用
 
-先使用管理员权限 powershell 命令关闭 wsl： `wsl --shutdown`
+1. 先使用管理员权限 powershell 命令关闭 wsl： `wsl --shutdown`
 
-接着在用户文件夹下新建一个 .wslconfig 文件  `C:\Users\<yourUserName>\.wslconfig`，内容如下：
+2. 接着在用户文件夹下新建一个 .wslconfig 文件  `C:\Users\<yourUserName>\.wslconfig`，内容如下：
 
-```
-[wsl2]memory=3GBswap=3GBlocalhostForwarding=true
-```
+   ```
+   [wsl2]
+   memory=3GB
+   swap=3GB
+   localhostForwarding=true
+   ```
 
 #### [可选] 使用 wsl 命令迁移 WSL 到非系统盘
 
@@ -210,7 +215,7 @@ tags:
 
 3. 注销 ubuntu20.04 发行版：
 
-   ```shell
+   ```powershell
    wsl --unregister Ubuntu-20.04
    ```
 
@@ -234,7 +239,7 @@ tags:
 
 * 查看已经安装的 WSL：
 
-  ```
+  ```powershell
   .\LxRunOffline.exe list
   ```
 
@@ -244,13 +249,13 @@ tags:
 
   先使用命令关闭 wsl： `wsl --shutdown`
 
-  ```
+  ```powershell
   .\LxRunOffline.exe move -n Ubuntu-20.04 -d E:\WSL\Ubuntu-20.04
   ```
 
 * 查看 Ubuntu-20.04 所在目录
 
-  ```
+  ```powershell
   .\LxRunOffline.exe get-dir -n Ubuntu-20.04
   ```
 
@@ -264,8 +269,16 @@ tags:
 
 1. 安装 docker
 
-   ```
-   # step 1: 安装必要的一些系统工具sudo apt-get updatesudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common# step 2: 安装GPG证书curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -# Step 3: 写入软件源信息sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"# Step 4: 更新并安装Docker-CEsudo apt-get -y updatesudo apt-get -y install docker-ce
+   ```shell
+   # step 1: 安装必要的一些系统工具
+   sudo apt-get update
+   sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common
+   # step 2: 安装GPG证书
+   curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
+   # Step 3: 写入软件源信息
+   sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
+   # Step 4: 更新并安装Docker-CE
+   sudo apt-get -y updatesudo apt-get -y install docker-ce
    ```
 
 2. 解决遇到的问题“no installation candidate”
@@ -280,7 +293,7 @@ tags:
 
      > 安装完成后，可以把该源删除
 
-     ```
+     ```shell
      sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu disco stable"
      ```
 
@@ -288,10 +301,10 @@ tags:
 
      > 如果出现 `configuring grub-pc` 就直接回车，不进行选择（三个框留空）；
 
+     ```shell
+     sudo apt-get -y update
+     sudo apt-get -y install docker-ce
      ```
-     sudo apt-get -y updatesudo apt-get -y install docker-ce
-     ```
-
 
 #### docker 配置（包括添加用户到 docker 组）
 
@@ -299,13 +312,13 @@ tags:
 
    > WSL2 上没有 systemctl
 
-   ```
+   ```shell
    sudo service docker start
    ```
 
 2. 初步进行测试
 
-   ```
+   ```shell
    sudo docker run hello-world
    ```
 
@@ -313,7 +326,7 @@ tags:
 
 3. [可选] 配置国内 docker 源（163源）
 
-   ```
+   ```shell
    sudo vim /etc/docker/daemon.jsonsudo service docker restart
    ```
 
@@ -322,13 +335,17 @@ tags:
    > 注意 tab 必须写正确。
 
    ```
-   {        "registry-mirrors": ["https://registry.docker-cn.com","http://hub-mirror.c.163.com"]}
+   {
+           "registry-mirrors": ["https://registry.docker-cn.com","http://hub-mirror.c.163.com"]
+   }
    ```
 
 4. [可选] 添加当前用户到 docker 用户组，这样可以不加 sudo 运行 docker
 
-   ```
-   sudo adduser $USER docker# 刷新 docker 组newgrp docker
+   ```shell
+   sudo adduser $USER docker
+   # 刷新 docker 组
+   newgrp docker
    ```
 
    测试运行结果：
@@ -343,8 +360,10 @@ tags:
 
 1. docker 安装 code-server
 
-   ```
-   sudo mkdir -p /home/coder/projectsudo chown -R jerry /home/coderdocker run --name code-server -d --env PASSWORD="ojbk" -p 127.0.0.1:8080:8080 -v "/home/coder/project:/home/coder/project" -u "$(id -u):$(id -g)" codercom/code-server:latest
+   ```shell
+   sudo mkdir -p /home/coder/project
+   sudo chown -R jerry /home/coder
+   docker run --name code-server -d --env PASSWORD="ojbk" -p 127.0.0.1:8080:8080 -v "/home/coder/project:/home/coder/project" -u "$(id -u):$(id -g)" codercom/code-server:latest
    ```
 
 2. 浏览器访问 `localhost:8080` 
@@ -359,7 +378,7 @@ tags:
 
    > 依赖于 docker 服务已启动
 
-   ```
+   ```shell
    docker update --restart=always code-server
    ```
 
@@ -371,6 +390,7 @@ tags:
 
 2. 解压后运行
 
-   ```
-   export PASSWORD="123456"./code-server --bind-addr localhost:8080
+   ```shell
+   export PASSWORD="123456"
+   ./code-server --bind-addr localhost:8080
    ```
