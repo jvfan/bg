@@ -43,7 +43,7 @@ tags:
 
 3. 将 WSL2 设置为默认版本
 
-   通过 `PowerShell` 命令行进行配置：
+   通过管理员权限 `PowerShell` 命令行进行配置：
 
    ```
    wsl --set-default-version 2
@@ -65,7 +65,7 @@ tags:
 
 3. 查看已经安装的 WSL 版本
 
-   `PowerShell` 中输入：
+   管理员权限 `PowerShell` 中输入：
 
    ```
    wsl -l -v
@@ -75,7 +75,7 @@ tags:
 
 4. 如果曾经安装过 WSL 一代，可使用如下命令更改版本（也可2降1）
 
-   `PowerShell` 中输入：
+   管理员权限 `PowerShell` 中输入：
 
    ```
    wsl --set-version Ubuntu-20.04 2
@@ -127,13 +127,13 @@ tags:
    - [WSL 的英特尔 GPU 驱动程序](https://downloadcenter.intel.com/download/30579/Intel-Graphics-Windows-DCH-Drivers)
    - [WSL 的 AMD GPU 驱动程序](https://community.amd.com/community/radeon-pro-graphics/blog/2020/06/17/announcing-amd-support-for-gpu-accelerated-machine-learning-training-on-windows-10)
 
-2. powershell 命令更新到 wslg
+2. 管理员权限 powershell 命令更新到 wslg
 
    ```shell
    wsl --update
    ```
 
-3. [可选] 尝试一些 linux gui 应用
+3. [可选] 在 linux shell 中安装一些 gui 应用
 
    ```shell
    # 在 linux shell 中执行
@@ -186,7 +186,7 @@ tags:
 
 #### [可选] 限制 WSL2 内存使用
 
-先使用命令关闭 wsl： `wsl --shutdown`
+先使用管理员权限 powershell 命令关闭 wsl： `wsl --shutdown`
 
 接着在用户文件夹下新建一个 .wslconfig 文件  `C:\Users\<yourUserName>\.wslconfig`，内容如下：
 
