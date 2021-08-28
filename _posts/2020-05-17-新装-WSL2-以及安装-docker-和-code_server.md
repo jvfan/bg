@@ -7,8 +7,9 @@ author:     Jerry Chen
 header-img: img/post-bg-debug.png
 catalog: true
 tags:
-    - docker
     - WSL2
+    - WSLg
+    - docker
     - code-server
 
 ---
@@ -397,3 +398,4 @@ localhostForwarding=true
    export PASSWORD="123456"
    ./code-server --bind-addr localhost:8080
    ```
+
