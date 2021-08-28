@@ -55,9 +55,21 @@ tags:
 
 #### 安装 Linux 分发版
 
-1. 打开应用商店搜索 “Ubuntu 20”并安装
+1. 安装 Ubuntu20.04
 
-   ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/image-20200517163132629.png)
+   * 方法一：管理员权限 `PowerShell` 命令行安装
+
+     ```powershell
+     # 列出所有可安装的 linux 版本
+     wsl --list --online
+     
+     # 下载安装 ubuntu20.04
+     wsl --install -d Ubuntu-20.04
+     ```
+
+   * 方法二：打开应用商店搜索 “Ubuntu 20”并安装
+
+     ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/image-20200517163132629.png)
 
 2. 安装完成后启动一次
 
