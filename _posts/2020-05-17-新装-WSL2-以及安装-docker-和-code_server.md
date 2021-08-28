@@ -1,5 +1,4 @@
 ---
-
 layout:     post
 title:      新装 WSL2 以及安装 docker 和 code_server
 subtitle:   关于如何新装和使用 WSL2
@@ -11,6 +10,7 @@ tags:
     - docker
     - WSL2
     - code-server
+
 ---
 
 > 需要 windows10 升级到 2004
@@ -27,14 +27,14 @@ tags:
 1. 首先启用 Windows 功能
 
    ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/image-20200517152329817.png)
-   
+
    另外通过 `PowerShell` 命令行也可以开启：
-   
+
    ```
    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
    ```
-   
+
 2. 更新 WSL 2 Linux 内核
 
    点此下载内核更新包 [X86](https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi) 
@@ -81,7 +81,7 @@ tags:
    wsl --set-version Ubuntu-20.04 2
    ```
 
-#### 配置 Ubuntu20.04（阿里云仓库）
+#### [可选] 配置 Ubuntu20.04（阿里云仓库）
 
 1. 换阿里源
 
@@ -115,7 +115,121 @@ tags:
    sudo apt-get upgrade
    ```
 
-#### 迁移 WSL 到非系统盘
+#### [可选] wsl2 升级 wslg
+
+> 先决条件 1：已经安装 wsl2；
+>
+> 先决条件 2：win10 内部版本在 21362+ 或者系统是 win11；
+
+1. 下载 gpu 驱动
+
+   - [适用于 WSL 的 NVIDIA GPU 驱动程序](https://developer.nvidia.com/cuda/wsl)
+   - [WSL 的 Intel GPU 驱动程序](https://downloadcenter.intel.com/download/29526)
+   - [WSL 的 AMD GPU 驱动程序](https://community.amd.com/community/radeon-pro-graphics/blog/2020/06/17/announcing-amd-support-for-gpu-accelerated-machine-learning-training-on-windows-10)
+
+2. powershell 命令更新到 wslg
+
+   ```shell
+   wsl --update
+   ```
+
+3. [可选] 尝试一些 linux gui 应用
+
+   ```shell
+   # 在 linux shell 中执行
+   sudo apt update
+   
+   # Gedit 编辑器
+   sudo apt install gedit -y
+   
+   # Nautilus 文件管理器
+   sudo apt install nautilus -y
+   ```
+
+#### [可选] 解决 wsl2 出现 Vmmem 内存占用过大
+
+1. 进入 WSL2，设置定时任务：每 15 分钟删除缓存，并创建一个文件
+
+   `sudo crontab -e -u root` 添加如下的行：
+
+   ```
+   */15 * * * * sync; echo 3 > /proc/sys/vm/drop_caches; touch /root/drop_caches_last_run
+   ```
+
+2. 开机自启动 cron 服务
+
+   `vim ~/.bashrc` 添加如下的行：
+
+   ```
+   [ -z "$(ps -ef | grep cron | grep -v grep)" ] && sudo /etc/init.d/cron start &> /dev/null
+   ```
+
+3. 允许启动 cron 服务而无需输入 root 密码
+
+   `sudo visudo` 添加以下行：
+
+   ```
+   %sudo ALL=NOPASSWD: /etc/init.d/cron start
+   ```
+
+4. 重启 WSL2
+
+   powershell 上杀死 WSL `wsl --shutdown`，然后再次启动它；
+
+5. 跟踪定时任务，判断它是否正常工作
+
+   因为在定时任务中创建了 /root/drop_caches_last_run 文件，可以通过查看该文件的修改日期跟踪目标任务的工作情况：
+
+   ```
+   sudo stat -c '%y' /root/drop_caches_last_run
+   ```
+
+#### [可选] 限制 WSL2 内存使用
+
+先使用命令关闭 wsl： `wsl --shutdown`
+
+接着在用户文件夹下新建一个 .wslconfig 文件  `C:\Users\<yourUserName>\.wslconfig`，内容如下：
+
+```
+[wsl2]
+memory=3GB
+swap=3GB
+localhostForwarding=true
+```
+
+#### [可选] 使用 wsl 命令迁移 WSL 到非系统盘
+
+1. 使用 powershell 关闭所有发行版：
+
+   ```powershell
+   wsl --shutdown
+   ```
+
+2. 导出 ubuntu20.04 发行版：
+
+   ```powershell
+   wsl --export Ubuntu-20.04 D:\WSL\Ubuntu-20.04.tar
+   ```
+
+3. 注销 ubuntu20.04 发行版：
+
+   ```shell
+   wsl --unregister Ubuntu-20.04
+   ```
+
+4. 从 `D:\WSL\Ubuntu-20.04.tar` 导入 ubuntu20.04 发行版到文件夹 `D:\WSL\Ubuntu-20.04` ：
+
+   ```powershell
+   wsl --import Ubuntu-20.04 D:\WSL\Ubuntu-20.04 D:\WSL\Ubuntu-20.04.tar --version 2
+   ```
+
+5. [可选] 删除中间导出文件：
+
+   ```powershell
+   rm D:\WSL\Ubuntu-20.04.tar
+   ```
+
+#### [可选] 使用 LxRunOffline 迁移 WSL 到非系统盘
 
 下载一个编译好的 [LxRunOffline](https://github.com/DDoSolitary/LxRunOffline/releases)（我下载的是 LxRunOffline-v3.5.0-msvc.zip），解压缩后使用该工具进行管理；
 
@@ -145,60 +259,9 @@ tags:
 
   ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/20200923100332.png)
 
-#### 解决 wsl2 出现 Vmmem 内存占用过大
-
-1. 进入 WSL2，设置定时任务：每 15 分钟删除缓存，并创建一个文件
-
-   `sudo crontab -e -u root` 添加如下的行：
-
-   ```
-   */15 * * * * sync; echo 3 > /proc/sys/vm/drop_caches; touch /root/drop_caches_last_run
-   ```
-
-2. 开机自启动 cron 服务
-
-   `vim ~/.bashrc` 添加如下的行：
-
-   ```
-   [ -z "$(ps -ef | grep cron | grep -v grep)" ] && sudo /etc/init.d/cron start &> /dev/null
-   ```
-
-3. 允许启动 cron 服务而无需输入 root 密码
-
-   `sudo visudo` 添加以下行：
-
-   ```
-   %sudo ALL=NOPASSWD: /etc/init.d/cron start
-   ```
-
-4. 重启 WSL2
-
-   powershell 上杀死 WSL `wsl --shutdown`，然后再次启动它；
-   
-5. 跟踪定时任务，判断它是否正常工作
-
-   因为在定时任务中创建了 /root/drop_caches_last_run 文件，可以通过查看该文件的修改日期跟踪目标任务的工作情况：
-
-   ```
-   sudo stat -c '%y' /root/drop_caches_last_run
-   ```
-
-#### [可选] 限制 WSL2 内存使用
-
-先使用命令关闭 wsl： `wsl --shutdown`
-
-接着在用户文件夹下新建一个 .wslconfig 文件  `C:\Users\<yourUserName>\.wslconfig`，内容如下：
-
-```
-[wsl2]
-memory=3GB
-swap=3GB
-localhostForwarding=true
-```
-
 ### docker 部分
 
-#### 安装 docker-ce（阿里云仓库）
+#### 安装预编译 docker-ce（阿里云仓库）
 
 > 注意：docker.io 是旧版本，这里是安装社区版本的 docker-ce
 
@@ -334,4 +397,3 @@ localhostForwarding=true
    export PASSWORD="123456"
    ./code-server --bind-addr localhost:8080
    ```
-
