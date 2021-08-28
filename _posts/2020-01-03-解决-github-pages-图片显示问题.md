@@ -1,8 +1,7 @@
 ---
-
 layout:     post
 title:      解决 github pages 图片显示问题
-subtitle:   通过 hosts 进行重定向
+subtitle:   修改 dns 或通过 hosts 进行重定向
 date:       2020-01-03
 author:     Jerry Chen
 header-img: img/post-bg-debug.png
@@ -11,10 +10,17 @@ tags:
     - other
 ---
 
-> 推荐使用阿里云公共DNS
+> 推荐使用腾讯 DNS；
 
+### 方法1：Public DNS+（腾讯 DNS）
 
-### 方法1：重定向
+IPv4：`119.29.29.29`和`183.60.82.98`
+
+IPv6：`2402:4e00::`和`2402:4e00:1::`
+
+自行设置或者见[官网页面](https://dns.pub/)。
+
+### 方法2：重定向
 
 1. 获取元素IP地址
 
@@ -49,12 +55,3 @@ tags:
 185.199.108.153	loee.xyz
 # my github-pages end
 ```
-
-### 方法2：阿里云DNS
-
-IPv4：`223.5.5.5`和`223.6.6.6`
-
-IPv6：`2400:3200::1`和`2400:3200:baba::1`
-
-自行设置或者见[官方帮助页面](http://www.alidns.com/setup/)。
-
