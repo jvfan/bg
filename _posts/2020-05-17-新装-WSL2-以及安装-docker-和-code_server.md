@@ -123,7 +123,7 @@ tags:
 
 1. 下载 gpu 驱动
 
-   > 因特尔或 AMD 的 GPU 驱动必装，Nvidia 可选；
+   > 你的电脑 GPU 属于什么硬件品牌就装对应的就好了；
 
    - [WSL 的英特尔 GPU 驱动程序](https://downloadcenter.intel.com/download/30579/Intel-Graphics-Windows-DCH-Drivers)
    - [WSL 的 AMD GPU 驱动程序](https://community.amd.com/community/radeon-pro-graphics/blog/2020/06/17/announcing-amd-support-for-gpu-accelerated-machine-learning-training-on-windows-10)
