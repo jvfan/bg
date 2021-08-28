@@ -11,7 +11,6 @@ tags:
     - WSLg
     - docker
     - code-server
-
 ---
 
 > 需要 windows10 升级到 2004
@@ -124,8 +123,8 @@ tags:
 
 1. 下载 gpu 驱动
 
-   - [适用于 WSL 的 NVIDIA GPU 驱动程序](https://developer.nvidia.com/cuda/wsl)
-   - [WSL 的 Intel GPU 驱动程序](https://downloadcenter.intel.com/download/29526)
+   - [WSL 的 Nvidia GPU 驱动程序](https://developer.nvidia.com/cuda/wsl)
+   - [WSL 的英特尔 GPU 驱动程序](https://downloadcenter.intel.com/download/30579/Intel-Graphics-Windows-DCH-Drivers)
    - [WSL 的 AMD GPU 驱动程序](https://community.amd.com/community/radeon-pro-graphics/blog/2020/06/17/announcing-amd-support-for-gpu-accelerated-machine-learning-training-on-windows-10)
 
 2. powershell 命令更新到 wslg
@@ -192,10 +191,7 @@ tags:
 接着在用户文件夹下新建一个 .wslconfig 文件  `C:\Users\<yourUserName>\.wslconfig`，内容如下：
 
 ```
-[wsl2]
-memory=3GB
-swap=3GB
-localhostForwarding=true
+[wsl2]memory=3GBswap=3GBlocalhostForwarding=true
 ```
 
 #### [可选] 使用 wsl 命令迁移 WSL 到非系统盘
@@ -269,16 +265,7 @@ localhostForwarding=true
 1. 安装 docker
 
    ```
-   # step 1: 安装必要的一些系统工具
-   sudo apt-get update
-   sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common
-   # step 2: 安装GPG证书
-   curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
-   # Step 3: 写入软件源信息
-   sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
-   # Step 4: 更新并安装Docker-CE
-   sudo apt-get -y update
-   sudo apt-get -y install docker-ce
+   # step 1: 安装必要的一些系统工具sudo apt-get updatesudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common# step 2: 安装GPG证书curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -# Step 3: 写入软件源信息sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"# Step 4: 更新并安装Docker-CEsudo apt-get -y updatesudo apt-get -y install docker-ce
    ```
 
 2. 解决遇到的问题“no installation candidate”
@@ -302,8 +289,7 @@ localhostForwarding=true
      > 如果出现 `configuring grub-pc` 就直接回车，不进行选择（三个框留空）；
 
      ```
-     sudo apt-get -y update
-     sudo apt-get -y install docker-ce
+     sudo apt-get -y updatesudo apt-get -y install docker-ce
      ```
 
 
@@ -328,8 +314,7 @@ localhostForwarding=true
 3. [可选] 配置国内 docker 源（163源）
 
    ```
-   sudo vim /etc/docker/daemon.json
-   sudo service docker restart
+   sudo vim /etc/docker/daemon.jsonsudo service docker restart
    ```
 
    添加如下内容：
@@ -337,18 +322,13 @@ localhostForwarding=true
    > 注意 tab 必须写正确。
 
    ```
-   {
-           "registry-mirrors": ["https://registry.docker-cn.com","http://hub-mirror.c.163.com"]
-   }
+   {        "registry-mirrors": ["https://registry.docker-cn.com","http://hub-mirror.c.163.com"]}
    ```
 
 4. [可选] 添加当前用户到 docker 用户组，这样可以不加 sudo 运行 docker
 
    ```
-   sudo adduser $USER docker
-   
-   # 刷新 docker 组
-   newgrp docker
+   sudo adduser $USER docker# 刷新 docker 组newgrp docker
    ```
 
    测试运行结果：
@@ -364,10 +344,7 @@ localhostForwarding=true
 1. docker 安装 code-server
 
    ```
-   sudo mkdir -p /home/coder/project
-   sudo chown -R jerry /home/coder
-   
-   docker run --name code-server -d --env PASSWORD="ojbk" -p 127.0.0.1:8080:8080 -v "/home/coder/project:/home/coder/project" -u "$(id -u):$(id -g)" codercom/code-server:latest
+   sudo mkdir -p /home/coder/projectsudo chown -R jerry /home/coderdocker run --name code-server -d --env PASSWORD="ojbk" -p 127.0.0.1:8080:8080 -v "/home/coder/project:/home/coder/project" -u "$(id -u):$(id -g)" codercom/code-server:latest
    ```
 
 2. 浏览器访问 `localhost:8080` 
@@ -395,7 +372,5 @@ localhostForwarding=true
 2. 解压后运行
 
    ```
-   export PASSWORD="123456"
-   ./code-server --bind-addr localhost:8080
+   export PASSWORD="123456"./code-server --bind-addr localhost:8080
    ```
-
