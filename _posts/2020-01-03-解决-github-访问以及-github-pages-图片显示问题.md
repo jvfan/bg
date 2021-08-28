@@ -7,7 +7,7 @@ author:     Jerry Chen
 header-img: img/post-bg-debug.png
 catalog: true
 tags:
-    - other
+    - github
 ---
 
 > 推荐使用腾讯 DNS；
