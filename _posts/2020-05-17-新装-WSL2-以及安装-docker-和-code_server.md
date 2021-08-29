@@ -67,7 +67,7 @@ tags:
      wsl --install -d Ubuntu-20.04
      ```
 
-   * 方法二：打开应用商店搜索 “Ubuntu 20”并安装
+   * 方法二：打开应用商店搜索 “Ubuntu 20.04”并安装
 
      ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/image-20200517163132629.png)
 
