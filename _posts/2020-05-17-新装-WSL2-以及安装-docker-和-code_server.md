@@ -239,7 +239,13 @@ tags:
    wsl --import Ubuntu-20.04 D:\WSL\Ubuntu-20.04 D:\WSL\Ubuntu-20.04.tar --version 2
    ```
 
-5. [可选] 删除中间导出文件：
+5. 设置 wsl2 Ubuntu-20.04 的默认用户：
+
+   ```powershell
+   ubuntu2004 config --default-user jerry
+   ```
+
+6. [可选] 删除中间导出文件：
 
    ```powershell
    rm D:\WSL\Ubuntu-20.04.tar
