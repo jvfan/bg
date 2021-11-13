@@ -117,7 +117,7 @@ compinit:498: no such file or directory: /usr/local/share/zsh/site-functions/_do
 
 解决方法：
 
-```
+```shell
 mkdir -p ~/.zsh/completion
 curl -L https://raw.githubusercontent.com/docker/machine/v0.16.0/contrib/completion/zsh/_docker-machine > ~/.zsh/completion/_docker-machine
 ```
