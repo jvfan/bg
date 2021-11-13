@@ -107,6 +107,21 @@ tags:
    rm D:\WSL\docker-desktop-data.tar
    ```
 
+### 更新 windows docker desktop 的问题
+
+如果你使用 zsh，当你升级 docker 后 zsh 可能在启动时报一个错误：
+
+```
+compinit:498: no such file or directory: /usr/local/share/zsh/site-functions/_docker-machine
+```
+
+解决方法：
+
+```
+mkdir -p ~/.zsh/completion
+curl -L https://raw.githubusercontent.com/docker/machine/v0.16.0/contrib/completion/zsh/_docker-machine > ~/.zsh/completion/_docker-machine
+```
+
 ### 外部主机访问 WSL2
 
 #### 配置 portproxy
