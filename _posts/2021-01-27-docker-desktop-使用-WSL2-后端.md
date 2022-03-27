@@ -46,8 +46,12 @@ tags:
        "https://hub-mirror.c.163.com",
        "https://reg-mirror.qiniu.com"
      ],
-     "insecure-registries": [],
-     "debug": false,
+     "builder": {
+       "gc": {
+         "defaultKeepStorage": "20GB",
+         "enabled": true
+       }
+     },
      "experimental": false,
      "features": {
        "buildkit": true
