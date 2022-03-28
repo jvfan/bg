@@ -30,7 +30,7 @@ tags:
 
    ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/20210127122045.png)
 
-5. Settings -> Docker Engine 中配置修改 "registry-mirrors" 镜像仓库地址
+5. [可选] Settings -> Docker Engine 中配置修改 "registry-mirrors" 镜像仓库地址
 
    > 阿里云专属镜像加速地址 [申请点这](https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors)
    
@@ -59,7 +59,9 @@ tags:
    }
    ```
 
-6. 在 WSL2 调用 docker 命令创建 app 能在桌面 GUI 程序中看到信息以及控制就成功了；
+6. [可选] Settings -> Resources -> Proxies 中设置 http 代理为 `192.168.2.1:7890`（按实际情况填写）；
+
+7. 在 WSL2 调用 docker 命令创建 app 能在桌面 GUI 程序中看到信息以及控制就成功了；
 
    > 需要运行一个 docker 实例；
 
