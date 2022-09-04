@@ -3,7 +3,7 @@
 layout:     post
 title:      VSCode+gdb+qemu 调试 linux 内核
 subtitle:   断点可视化调试 x86_64 linux 内核
-date:       2022-09-02
+date:       2022-09-04
 author:     Jerry Chen
 header-img: img/post-bg-coffee.jpeg
 catalog: true
