@@ -10,6 +10,7 @@ catalog: true
 tags:
     - docker-desktop
     - WSL2
+    - GPU
 ---
 
 > WSL2 作为后端要求 Windows 2004 及以上版本，安装 WSL2 请参考以前的文章；
@@ -66,6 +67,27 @@ tags:
    > 需要运行一个 docker 实例；
 
    ![](https://raw.githubusercontent.com/jvfan/jvfan.github.io/master/img/post_img/20210127123017.png)
+
+### 设置 GPU 加速
+
+[微软文档](https://docs.microsoft.com/zh-cn/windows/wsl/tutorials/gpu-compute)
+
+1. 下载并安装 NVIDIA GPU 的最新驱动程序：[点这里](https://www.nvidia.com/Download/index.aspx)
+
+2. 最新 docker-desktop 已经支持 GPU 加速，不用做额外操作；
+
+3. 示例：使用 GPU 加速的 NVIDIA NGC TensorFlow 容器：
+
+   > 核心参数：`--gpus all`；
+
+   ```shell
+   # 运行容器
+   docker run --gpus all -it --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 nvcr.io/nvidia/tensorflow:20.03-tf2-py3
+   
+   # 进入目录运行模型
+   cd nvidia-examples/cnn/
+   python resnet.py --batch_size=64
+   ```
 
 ### 迁移 docker 的 WSL2 后端存储位置
 
