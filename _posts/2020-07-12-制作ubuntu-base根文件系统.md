@@ -7,7 +7,6 @@ author:     Jerry Chen
 header-img: img/post-bg-coffee.jpeg
 catalog: true
 tags:
-    - LVGL
     - QEMU
 ---
 
